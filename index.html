@@ -6,21 +6,27 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
-/* ===== 背景は body に1回だけ ===== */
+/* ✅ 背景は html に1回だけ（Safari対策） */
+html {
+  height: 100%;
+  background: linear-gradient(#2ea3c7, #6fb06f);
+}
+
+/* ✅ body は透明にする */
 body {
   margin: 0;
   font-family: sans-serif;
   text-align: center;
-  background: linear-gradient(#2ea3c7, #6fb06f);
+  background: transparent;
   color: white;
 }
 
-/* ===== 共通レイアウト ===== */
+/* 共通ラッパー */
 .wrapper {
   padding-bottom: 40px;
 }
 
-/* ヘッダー（常に同じ位置） */
+/* ヘッダー */
 .header {
   padding-top: 20px;
 }
@@ -29,7 +35,7 @@ body {
   font-weight: bold;
 }
 
-/* メインタイトル */
+/* タイトル */
 .main-title {
   font-size: 32px;
   font-weight: bold;
@@ -47,12 +53,12 @@ button {
   cursor: pointer;
 }
 
-/* ===== 画面切り替え（同一背景） ===== */
+/* 画面切替 */
 #stamp {
   display: none;
 }
 
-/* ===== スタンプ配置（2×2＋中央1） ===== */
+/* スタンプ配置（2×2＋下中央） */
 .stamps {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -68,13 +74,13 @@ button {
   object-fit: contain;
 }
 
-/* 5個目だけ中央 */
+/* 5個目を中央に */
 .stamps img:nth-child(5) {
   grid-column: 1 / span 2;
   justify-self: center;
 }
 
-/* ===== ポップアップ ===== */
+/* ポップアップ */
 #popup {
   display: none;
   position: fixed;
@@ -98,7 +104,7 @@ button {
 
 <div class="wrapper">
 
-  <!-- ===== TOP ===== -->
+  <!-- TOP -->
   <div id="top">
     <div class="header">
       <div class="header-title">くみまち</div>
@@ -109,7 +115,7 @@ button {
     <button onclick="goStamp()">スタンプ帳を見る</button>
   </div>
 
-  <!-- ===== スタンプ帳 ===== -->
+  <!-- スタンプ帳 -->
   <div id="stamp">
     <div class="header">
       <div class="header-title">くみまち</div>
@@ -121,7 +127,7 @@ button {
 
 </div>
 
-<!-- ===== ポップアップ ===== -->
+<!-- ポップアップ -->
 <div id="popup">
   <div class="popup-inner">
     <h2 id="popupMessage"></h2>
@@ -132,7 +138,6 @@ button {
 <script>
 const TOTAL = 5;
 
-/* スタンプ取得状況 */
 function getStamps() {
   const s = JSON.parse(localStorage.getItem("stamps") || "[]");
   return s.length === TOTAL ? s : Array(TOTAL).fill(false);
@@ -142,7 +147,6 @@ function saveStamps(s) {
   localStorage.setItem("stamps", JSON.stringify(s));
 }
 
-/* 画面切り替え */
 function goStamp() {
   document.getElementById("top").style.display = "none";
   document.getElementById("stamp").style.display = "block";
@@ -150,7 +154,6 @@ function goStamp() {
   window.scrollTo(0, 0);
 }
 
-/* スタンプ描画 */
 function renderStamps() {
   const c = document.getElementById("stamps");
   c.innerHTML = "";
@@ -169,7 +172,6 @@ function renderStamps() {
   }
 }
 
-/* ポップアップ */
 function showPopup(text) {
   document.getElementById("popupMessage").textContent = text;
   document.getElementById("popup").style.display = "block";
@@ -179,7 +181,7 @@ function closePopup() {
   document.getElementById("popup").style.display = "none";
 }
 
-/* QR (?stamp=1〜5) */
+/* QR */
 const p = new URLSearchParams(location.search);
 const n = Number(p.get("stamp"));
 
